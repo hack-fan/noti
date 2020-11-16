@@ -20,7 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e17c9fef-a319-407f-a552-0a4597ce9e5e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/noti.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/watcherTasks.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/wework.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/noti.go" beforeDir="false" afterPath="$PROJECT_DIR$/noti.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +55,14 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/watchers.xml" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
@@ -70,12 +81,28 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="more readme" />
-    <option name="LAST_COMMIT_MESSAGE" value="more readme" />
+    <MESSAGE value="init mod" />
+    <option name="LAST_COMMIT_MESSAGE" value="init mod" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
   </component>
   <component name="WindowStateProjectService">
     <state x="646" y="294" key="#Go_Modules" timestamp="1605542623542">
       <screen x="0" y="0" width="1707" height="920" />
     </state>
     <state x="646" y="294" key="#Go_Modules/0.0.1707.920@0.0.1707.920" timestamp="1605542623542" />
+    <state x="519" y="230" key="EditFileWatcherDialog" timestamp="1605543758647">
+      <screen x="0" y="0" width="1707" height="920" />
+    </state>
+    <state x="519" y="230" key="EditFileWatcherDialog/0.0.1707.920@0.0.1707.920" timestamp="1605543758647" />
+    <state x="634" y="215" key="FileChooserDialogImpl" timestamp="1605543750068">
+      <screen x="0" y="0" width="1707" height="920" />
+    </state>
+    <state x="634" y="215" key="FileChooserDialogImpl/0.0.1707.920@0.0.1707.920" timestamp="1605543750068" />
+    <state x="370" y="104" key="SettingsEditor" timestamp="1605544692616">
+      <screen x="0" y="0" width="1707" height="920" />
+    </state>
+    <state x="370" y="104" key="SettingsEditor/0.0.1707.920@0.0.1707.920" timestamp="1605544692616" />
   </component>
 </project>
