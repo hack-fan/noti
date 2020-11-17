@@ -2,124 +2,214 @@ package noti
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
+	"github.com/hack-fan/config"
 	"go.uber.org/zap"
 )
 
-var debug bool
+// Provider can send notifications
+type Provider string
 
-// 企业微信机器人的 key
-var (
-	infoKey  string
-	warnKey  string
-	errorKey string
+// All sender provider
+const (
+	ProviderWework = "wework"
 )
 
-var log *zap.SugaredLogger
+// Settings will be defined in New func or from Env
+type Settings struct {
+	NotiProvider Provider `default:"debug"`
+	Wework       *WeworkSender
+}
 
-// 注意这要在程序运行前存在环境变量才有效
+// Sender interface
+type Sender interface {
+	Info(args ...interface{}) error
+	Warn(args ...interface{}) error
+	Error(args ...interface{}) error
+	InfoMD(lines []string) error
+	WarnMD(lines []string) error
+	ErrorMD(lines []string) error
+}
+
+// Noti is noti instance
+type Noti struct {
+	sender   Sender
+	settings *Settings
+	log      *zap.SugaredLogger
+}
+
+var defaultNoti *Noti
+
+func NewNoti(settings *Settings) *Noti {
+	// load more settings from env
+	config.MustLoad(settings)
+	// new noti
+	var n = &Noti{
+		settings: settings,
+	}
+	// provider
+	var warning string
+	switch settings.NotiProvider {
+	case ProviderWework:
+		if settings.Wework.Ready() {
+			n.sender = settings.Wework
+		} else {
+			warning = fmt.Sprintf("%s sender config is invalid, check it please", settings.NotiProvider)
+		}
+	}
+	// logger
+	if n.sender != nil {
+		logger, _ := zap.NewProduction()
+		n.log = logger.Sugar()
+	} else {
+		logger, _ := zap.NewDevelopment()
+		n.log = logger.Sugar()
+	}
+
+	if warning != "" {
+		n.log.Error(warning)
+	}
+
+	return n
+}
+
+// SetDebug force set debug mode
+func (n *Noti) SetDebug() {
+	n.sender = nil
+	logger, _ := zap.NewDevelopment()
+	n.log = logger.Sugar()
+}
+
+// SetLogger accept a custom zap sugared logger
+func (n *Noti) SetLogger(logger *zap.SugaredLogger) {
+	n.log = logger
+}
+
+func (n *Noti) Error(args ...interface{}) {
+	if n.sender != nil {
+		err := n.sender.Error(args)
+		if err != nil {
+			n.log.Errorf("send notification to %s failed:%s", n.settings.NotiProvider, err)
+		}
+	}
+	n.log.Error(args)
+}
+
+func (n *Noti) Errorf(format string, a ...interface{}) {
+	n.Error(fmt.Sprintf(format, a...))
+}
+
+func (n *Noti) ErrorMD(lines []string) {
+	if n.sender != nil {
+		err := n.sender.ErrorMD(lines)
+		if err != nil {
+			n.log.Errorf("send notification to %s failed:%s", n.settings.NotiProvider, err)
+		}
+	}
+	n.log.Error(strings.Join(lines, "\n"))
+}
+
+func (n *Noti) Warn(args ...interface{}) {
+	if n.sender != nil {
+		err := n.sender.Warn(args)
+		if err != nil {
+			n.log.Errorf("send notification to %s failed:%s", n.settings.NotiProvider, err)
+		}
+	}
+	n.log.Warn(args)
+}
+
+func (n *Noti) Warnf(format string, a ...interface{}) {
+	n.Warn(fmt.Sprintf(format, a...))
+}
+
+func (n *Noti) WarnMD(lines []string) {
+	if n.sender != nil {
+		err := n.sender.WarnMD(lines)
+		if err != nil {
+			n.log.Errorf("send notification to %s failed:%s", n.settings.NotiProvider, err)
+		}
+	}
+	n.log.Warn(strings.Join(lines, "\n"))
+}
+
+func (n *Noti) Info(args ...interface{}) {
+	if n.sender != nil {
+		err := n.sender.Info(args)
+		if err != nil {
+			n.log.Errorf("send notification to %s failed:%s", n.settings.NotiProvider, err)
+		}
+	}
+	n.log.Info(args)
+}
+
+func (n *Noti) Infof(format string, a ...interface{}) {
+	n.Info(fmt.Sprintf(format, a...))
+}
+
+func (n *Noti) InfoMD(lines []string) {
+	if n.sender != nil {
+		err := n.sender.InfoMD(lines)
+		if err != nil {
+			n.log.Errorf("send notification to %s failed:%s", n.settings.NotiProvider, err)
+		}
+	}
+	n.log.Info(strings.Join(lines, "\n"))
+}
+
+// init default noti, easy for use
 func init() {
-	de := os.Getenv("APP_DEBUG")
-	if de == "true" || de == "TRUE" || de == "True" || de == "1" {
-		SetDebug()
-	}
-
-	logger, _ := zap.NewProduction()
-	log = logger.Sugar()
-
-	infoKey = os.Getenv("IM_INFO_KEY")
-	warnKey = os.Getenv("IM_WARN_KEY")
-	errorKey = os.Getenv("IM_ERROR_KEY")
-	// 只要配置不齐，就设置成调试模式
-	if infoKey == "" || warnKey == "" || errorKey == "" {
-		SetDebug()
-	}
+	var settings = new(Settings)
+	defaultNoti = NewNoti(settings)
 }
 
-// SetDebug 设置为调试模式，通知打印到日志
+// SetDebug set default noti to debug mode
 func SetDebug() {
-	debug = true
+	defaultNoti.SetDebug()
 }
 
-// Error 企业微信错误通知,调试模式下只打日志
+// Error send default error notification
 func Error(args ...interface{}) {
-	if debug {
-		log.Error(args...)
-	} else {
-		wError(args...)
-	}
+	defaultNoti.Error(args)
 }
 
-// Errorf 企业微信错误通知,调试模式下只打日志
+// Errorf send default error notification with format
 func Errorf(format string, a ...interface{}) {
-	if debug {
-		log.Errorf(format, a...)
-	} else {
-		wError(fmt.Sprintf(format, a...))
-	}
+	defaultNoti.Errorf(format, a...)
 }
 
-// ErrorMD Markdown 格式企业微信出错通知,调试模式下只打日志
+// ErrorMD send default markdown error notification
 func ErrorMD(lines []string) {
-	if debug {
-		log.Info(strings.Join(lines, "\n"))
-	} else {
-		wErrorMD(lines)
-	}
+	defaultNoti.ErrorMD(lines)
 }
 
-// Warn 企业微信重要通知,调试模式下只打日志
+// Warn send default warn notification
 func Warn(args ...interface{}) {
-	if debug {
-		log.Warn(args...)
-	} else {
-		wWarn(args...)
-	}
+	defaultNoti.Warn(args)
 }
 
-// Warnf 企业微信重要通知,调试模式下只打日志
+// Warnf send default warn notification with format
 func Warnf(format string, a ...interface{}) {
-	if debug {
-		log.Warnf(format, a...)
-	} else {
-		wWarn(fmt.Sprintf(format, a...))
-	}
+	defaultNoti.Warnf(format, a...)
 }
 
-// WarnMD Markdown 格式企业微信重要通知,调试模式下只打日志
+// WarnMD send default markdown warn notification
 func WarnMD(lines []string) {
-	if debug {
-		log.Warn(strings.Join(lines, "\n"))
-	} else {
-		wWarnMD(lines)
-	}
+	defaultNoti.WarnMD(lines)
 }
 
-// Info 企业微信通知,调试模式下只打日志
+// Info send default info notification
 func Info(args ...interface{}) {
-	if debug {
-		log.Info(args...)
-	} else {
-		wInfo(args...)
-	}
+	defaultNoti.Info(args)
 }
 
-// Infof 企业微信通知,调试模式下只打日志
+// Infof send default info notification with format
 func Infof(format string, a ...interface{}) {
-	if debug {
-		log.Infof(format, a...)
-	} else {
-		wInfo(fmt.Sprintf(format, a...))
-	}
+	defaultNoti.Infof(format, a...)
 }
 
-// InfoMD Markdown 格式企业微信一般通知,调试模式下只打日志
+// InfoMD send default markdown info notification
 func InfoMD(lines []string) {
-	if debug {
-		log.Info(strings.Join(lines, "\n"))
-	} else {
-		wInfoMD(lines)
-	}
+	defaultNoti.InfoMD(lines)
 }

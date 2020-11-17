@@ -20,11 +20,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e17c9fef-a319-407f-a552-0a4597ce9e5e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/watcherTasks.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wework.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/test.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/noti.go" beforeDir="false" afterPath="$PROJECT_DIR$/noti.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wework.go" beforeDir="false" afterPath="$PROJECT_DIR$/wework.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +63,30 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="go.vgo" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="noti" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        </ENTRIES>
+      </EXTENSION>
+      <framework value="gotest" />
+      <kind value="DIRECTORY" />
+      <package value="github.com/hack-fan/noti" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
@@ -78,11 +102,15 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="more readme" />
     <MESSAGE value="init mod" />
-    <option name="LAST_COMMIT_MESSAGE" value="init mod" />
+    <MESSAGE value="init code" />
+    <MESSAGE value="go get -u" />
+    <MESSAGE value="wework ok" />
+    <option name="LAST_COMMIT_MESSAGE" value="wework ok" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
@@ -92,6 +120,10 @@
       <screen x="0" y="0" width="1707" height="920" />
     </state>
     <state x="646" y="294" key="#Go_Modules/0.0.1707.920@0.0.1707.920" timestamp="1605542623542" />
+    <state x="309" y="115" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605587529096">
+      <screen x="0" y="0" width="1707" height="920" />
+    </state>
+    <state x="309" y="115" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1707.920@0.0.1707.920" timestamp="1605587529096" />
     <state x="519" y="230" key="EditFileWatcherDialog" timestamp="1605543758647">
       <screen x="0" y="0" width="1707" height="920" />
     </state>
@@ -100,9 +132,25 @@
       <screen x="0" y="0" width="1707" height="920" />
     </state>
     <state x="634" y="215" key="FileChooserDialogImpl/0.0.1707.920@0.0.1707.920" timestamp="1605543750068" />
-    <state x="370" y="104" key="SettingsEditor" timestamp="1605544692616">
+    <state width="1661" height="234" key="GridCell.Tab.0.bottom" timestamp="1605587593783">
       <screen x="0" y="0" width="1707" height="920" />
     </state>
-    <state x="370" y="104" key="SettingsEditor/0.0.1707.920@0.0.1707.920" timestamp="1605544692616" />
+    <state width="1661" height="234" key="GridCell.Tab.0.bottom/0.0.1707.920@0.0.1707.920" timestamp="1605587593783" />
+    <state width="1661" height="234" key="GridCell.Tab.0.center" timestamp="1605587593783">
+      <screen x="0" y="0" width="1707" height="920" />
+    </state>
+    <state width="1661" height="234" key="GridCell.Tab.0.center/0.0.1707.920@0.0.1707.920" timestamp="1605587593783" />
+    <state width="1661" height="234" key="GridCell.Tab.0.left" timestamp="1605587593783">
+      <screen x="0" y="0" width="1707" height="920" />
+    </state>
+    <state width="1661" height="234" key="GridCell.Tab.0.left/0.0.1707.920@0.0.1707.920" timestamp="1605587593783" />
+    <state width="1661" height="234" key="GridCell.Tab.0.right" timestamp="1605587593783">
+      <screen x="0" y="0" width="1707" height="920" />
+    </state>
+    <state width="1661" height="234" key="GridCell.Tab.0.right/0.0.1707.920@0.0.1707.920" timestamp="1605587593783" />
+    <state x="370" y="104" key="SettingsEditor" timestamp="1605587980550">
+      <screen x="0" y="0" width="1707" height="920" />
+    </state>
+    <state x="370" y="104" key="SettingsEditor/0.0.1707.920@0.0.1707.920" timestamp="1605587980550" />
   </component>
 </project>

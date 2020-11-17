@@ -7,28 +7,41 @@ import (
 	"github.com/levigross/grequests"
 )
 
-// 企业微信机器人基础链接
-const baseURL = `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=`
+// WeworkSender can send notification to wechat work.
+type WeworkSender struct {
+	BaseURL  string `default:"https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="`
+	InfoKey  string
+	WarnKey  string
+	ErrorKey string
+}
 
-// RobotMsg 群机器人消息
+// RobotMsg is message api model
 type RobotMsg struct {
 	MsgType  string       `json:"msgtype"`
 	Text     *MsgText     `json:"text,omitempty"`
 	MarkDown *MsgMarkdown `json:"markdown,omitempty"`
 }
 
-// MsgText 文本消息部分
+// MsgText is text message api model
 type MsgText struct {
 	Content string `json:"content"`
 }
 
-// MsgMarkdown MD消息
+// MsgMarkdown is md message api model
 type MsgMarkdown struct {
 	Content string `json:"content"`
 }
 
-// SendRobotMsg 发送机器人消息
-func SendRobotMsg(key, tp, content string) {
+// Ready check if wechat work sender ready
+func (s *WeworkSender) Ready() bool {
+	if s.InfoKey != "" && s.WarnKey != "" && s.ErrorKey != "" {
+		return true
+	}
+	return false
+}
+
+// SendRobotMsg send robot message by wechat work web api
+func (s *WeworkSender) SendRobotMsg(key, tp, content string) error {
 	var msg = &RobotMsg{
 		MsgType: tp,
 	}
@@ -38,76 +51,71 @@ func SendRobotMsg(key, tp, content string) {
 	case "markdown":
 		msg.MarkDown = &MsgMarkdown{Content: content}
 	}
-	_, err := grequests.Post(baseURL+key, &grequests.RequestOptions{
+	_, err := grequests.Post(s.BaseURL+key, &grequests.RequestOptions{
 		JSON: msg,
 	})
 	if err != nil {
-		log.Error(err)
-		return
+		return fmt.Errorf("wechat work send robot message api error: %w", err)
 	}
-	log.Infof("向企业微信发送通知成功：%s", content)
+	return nil
 }
 
 // SendRobotMarkdown 向机器人发送 Markdown 通知
-func SendRobotMarkdown(key string, lines []string) {
+func (s *WeworkSender) SendRobotMarkdown(key string, lines []string) error {
 	// 一次最多4096字 控制一下
 	var buffer = make([]string, 0)
 	var count, times int
 	for _, line := range lines {
 		if len(line) > 4000 {
-			// 单行不能超过4000字
-			log.Error("发送微信消息时单行超过4000字，取消发送，打印如下。")
-			log.Error(strings.Join(lines, "\n"))
-			return
+			return fmt.Errorf("markdown message line length must less than 4000")
 		}
 		if count+len(line) > 4000 {
-			// 加上这行就超长了，赶紧把之前的打印一下，重新开始积累
-			SendRobotMsg(key, "markdown", strings.Join(buffer, "\n"))
+			err := s.SendRobotMsg(key, "markdown", strings.Join(buffer, "\n"))
+			if err != nil {
+				return err
+			}
 			buffer = make([]string, 0)
 			count = 0
 			times++
 			if times >= 5 {
-				// 已经发了5次了，太长了，不继续发了
-				log.Error("发送微信消息时满容量发送了5次还未发完，取消后续发送，打印如下。")
-				log.Error(strings.Join(lines, "\n"))
-				return
+				return fmt.Errorf("markdown message is longger than 20k")
 			}
 		}
 		buffer = append(buffer, line)
 		count += len(line)
 	}
-	// 最后发送 buffer 中残留的最后一部分
-	SendRobotMsg(key, "markdown", strings.Join(buffer, "\n"))
+	// send left in buffer
+	return s.SendRobotMsg(key, "markdown", strings.Join(buffer, "\n"))
 }
 
 // =============== 三个通知机器人 出错，紧急和普通 ===================
 
-// wError 程序出错通知
-func wError(args ...interface{}) {
-	SendRobotMsg(errorKey, "text", fmt.Sprint(args...))
+// Error 程序出错通知
+func (s *WeworkSender) Error(args ...interface{}) error {
+	return s.SendRobotMsg(s.ErrorKey, "text", fmt.Sprint(args...))
 }
 
-// wWarn 紧急通知
-func wWarn(args ...interface{}) {
-	SendRobotMsg(warnKey, "text", fmt.Sprint(args...))
+// Warn 紧急通知
+func (s *WeworkSender) Warn(args ...interface{}) error {
+	return s.SendRobotMsg(s.WarnKey, "text", fmt.Sprint(args...))
 }
 
-// wInfo 一般通知
-func wInfo(args ...interface{}) {
-	SendRobotMsg(infoKey, "text", fmt.Sprint(args...))
+// Info 一般通知
+func (s *WeworkSender) Info(args ...interface{}) error {
+	return s.SendRobotMsg(s.InfoKey, "text", fmt.Sprint(args...))
 }
 
-// wErrorMD 出错通知 Markdown
-func wErrorMD(lines []string) {
-	SendRobotMarkdown(errorKey, lines)
+// ErrorMD 出错通知 Markdown
+func (s *WeworkSender) ErrorMD(lines []string) error {
+	return s.SendRobotMarkdown(s.ErrorKey, lines)
 }
 
-// wWarnMD 紧急通知 Markdown
-func wWarnMD(lines []string) {
-	SendRobotMarkdown(warnKey, lines)
+// WarnMD 紧急通知 Markdown
+func (s *WeworkSender) WarnMD(lines []string) error {
+	return s.SendRobotMarkdown(s.WarnKey, lines)
 }
 
-// wInfoMD 一般通知 Markdown
-func wInfoMD(lines []string) {
-	SendRobotMarkdown(infoKey, lines)
+// InfoMD 一般通知 Markdown
+func (s *WeworkSender) InfoMD(lines []string) error {
+	return s.SendRobotMarkdown(s.InfoKey, lines)
 }
