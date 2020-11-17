@@ -33,7 +33,7 @@ type MsgMarkdown struct {
 }
 
 // Ready check if wechat work sender ready
-func (s *WeworkSender) Ready() bool {
+func (s WeworkSender) Ready() bool {
 	if s.InfoKey != "" && s.WarnKey != "" && s.ErrorKey != "" {
 		return true
 	}
@@ -41,7 +41,7 @@ func (s *WeworkSender) Ready() bool {
 }
 
 // SendRobotMsg send robot message by wechat work web api
-func (s *WeworkSender) SendRobotMsg(key, tp, content string) error {
+func (s WeworkSender) SendRobotMsg(key, tp, content string) error {
 	var msg = &RobotMsg{
 		MsgType: tp,
 	}
@@ -61,7 +61,7 @@ func (s *WeworkSender) SendRobotMsg(key, tp, content string) error {
 }
 
 // SendRobotMarkdown 向机器人发送 Markdown 通知
-func (s *WeworkSender) SendRobotMarkdown(key string, lines []string) error {
+func (s WeworkSender) SendRobotMarkdown(key string, lines []string) error {
 	// 一次最多4096字 控制一下
 	var buffer = make([]string, 0)
 	var count, times int
@@ -91,31 +91,31 @@ func (s *WeworkSender) SendRobotMarkdown(key string, lines []string) error {
 // =============== 三个通知机器人 出错，紧急和普通 ===================
 
 // Error 程序出错通知
-func (s *WeworkSender) Error(args ...interface{}) error {
+func (s WeworkSender) Error(args ...interface{}) error {
 	return s.SendRobotMsg(s.ErrorKey, "text", fmt.Sprint(args...))
 }
 
 // Warn 紧急通知
-func (s *WeworkSender) Warn(args ...interface{}) error {
+func (s WeworkSender) Warn(args ...interface{}) error {
 	return s.SendRobotMsg(s.WarnKey, "text", fmt.Sprint(args...))
 }
 
 // Info 一般通知
-func (s *WeworkSender) Info(args ...interface{}) error {
+func (s WeworkSender) Info(args ...interface{}) error {
 	return s.SendRobotMsg(s.InfoKey, "text", fmt.Sprint(args...))
 }
 
 // ErrorMD 出错通知 Markdown
-func (s *WeworkSender) ErrorMD(lines []string) error {
+func (s WeworkSender) ErrorMD(lines []string) error {
 	return s.SendRobotMarkdown(s.ErrorKey, lines)
 }
 
 // WarnMD 紧急通知 Markdown
-func (s *WeworkSender) WarnMD(lines []string) error {
+func (s WeworkSender) WarnMD(lines []string) error {
 	return s.SendRobotMarkdown(s.WarnKey, lines)
 }
 
 // InfoMD 一般通知 Markdown
-func (s *WeworkSender) InfoMD(lines []string) error {
+func (s WeworkSender) InfoMD(lines []string) error {
 	return s.SendRobotMarkdown(s.InfoKey, lines)
 }

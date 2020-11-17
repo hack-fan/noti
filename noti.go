@@ -8,9 +8,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// Provider can send notifications
-type Provider string
-
 // All sender provider
 const (
 	ProviderWework = "wework"
@@ -18,8 +15,8 @@ const (
 
 // Settings will be defined in New func or from Env
 type Settings struct {
-	NotiProvider Provider `default:"debug"`
-	Wework       *WeworkSender
+	NotiProvider string `default:"debug"`
+	Wework       WeworkSender
 }
 
 // Sender interface
@@ -88,12 +85,12 @@ func (n *Noti) SetLogger(logger *zap.SugaredLogger) {
 
 func (n *Noti) Error(args ...interface{}) {
 	if n.sender != nil {
-		err := n.sender.Error(args)
+		err := n.sender.Error(args...)
 		if err != nil {
 			n.log.Errorf("send notification to %s failed:%s", n.settings.NotiProvider, err)
 		}
 	}
-	n.log.Error(args)
+	n.log.Error(args...)
 }
 
 func (n *Noti) Errorf(format string, a ...interface{}) {
@@ -112,12 +109,12 @@ func (n *Noti) ErrorMD(lines []string) {
 
 func (n *Noti) Warn(args ...interface{}) {
 	if n.sender != nil {
-		err := n.sender.Warn(args)
+		err := n.sender.Warn(args...)
 		if err != nil {
 			n.log.Errorf("send notification to %s failed:%s", n.settings.NotiProvider, err)
 		}
 	}
-	n.log.Warn(args)
+	n.log.Warn(args...)
 }
 
 func (n *Noti) Warnf(format string, a ...interface{}) {
@@ -136,12 +133,12 @@ func (n *Noti) WarnMD(lines []string) {
 
 func (n *Noti) Info(args ...interface{}) {
 	if n.sender != nil {
-		err := n.sender.Info(args)
+		err := n.sender.Info(args...)
 		if err != nil {
 			n.log.Errorf("send notification to %s failed:%s", n.settings.NotiProvider, err)
 		}
 	}
-	n.log.Info(args)
+	n.log.Info(args...)
 }
 
 func (n *Noti) Infof(format string, a ...interface{}) {
@@ -171,7 +168,7 @@ func SetDebug() {
 
 // Error send default error notification
 func Error(args ...interface{}) {
-	defaultNoti.Error(args)
+	defaultNoti.Error(args...)
 }
 
 // Errorf send default error notification with format
@@ -186,7 +183,7 @@ func ErrorMD(lines []string) {
 
 // Warn send default warn notification
 func Warn(args ...interface{}) {
-	defaultNoti.Warn(args)
+	defaultNoti.Warn(args...)
 }
 
 // Warnf send default warn notification with format
@@ -201,7 +198,7 @@ func WarnMD(lines []string) {
 
 // Info send default info notification
 func Info(args ...interface{}) {
-	defaultNoti.Info(args)
+	defaultNoti.Info(args...)
 }
 
 // Infof send default info notification with format
